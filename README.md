@@ -1,3 +1,12 @@
+# Telegram Metro Alert Bot
+
+This project is a Telegram bot designed to send real-time alerts about metro line disruptions. It will notify users instantly when there are issues on metro lines, helping them avoid delays and plan their trips more efficiently.
+
+# ⚠️ Early Development Stage:
+The project is still in its early stages and not functional yet, but updates and improvements are planned as development continues.
+
+
+
 # tube-bot
 
 Folder structure
