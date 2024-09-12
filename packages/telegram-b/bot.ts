@@ -6,14 +6,14 @@ const token = '';
 const bot = new TelegramBot(token, { polling: false});
 
 bot.onText(/\/start/, (msg) => {
-  bot.sendMessage(msg.chat.id, '¡Hola! Soy un bot hecho con TypeScript.');
+  bot.sendMessage(msg.chat.id, 'Hi, please select the tube lines you are interested in');
 });
 
-// Responder a cualquier mensaje de texto
+// Confirm that the input has been received
 bot.on('message', (msg) => {
     const chatId = msg.chat.id;
     const message = msg.text
-    bot.sendMessage(chatId, `Recibí tu mensaje: ${msg.text}`);
+    bot.sendMessage(chatId, `Got it, you are interested in ${msg.text} line`);
     
 });
 
