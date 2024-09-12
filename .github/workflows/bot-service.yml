@@ -1,0 +1,69 @@
+name: Bot Service
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'packages/bot-service/**'
+      - '.github/workflows/bot-service.yml'
+  workflow_dispatch:
+
+env:
+  WORKING_DIRECTORY: 'packages/bot-service'
+  AWS_REGION: 'eu-central-1'
+
+jobs:
+  bot-service:
+    runs-on: ubuntu-22.04
+
+    defaults:
+      run:
+        working-directory: ${{ github.workspace }}/${{ env.WORKING_DIRECTORY }}
+
+    steps:
+      - uses: actions/checkout@v4.1.7
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          cache: 'npm'
+          cache-dependency-path: ${{ github.workspace }}/${{ env.WORKING_DIRECTORY }}
+          node-version: '20'
+      
+      - name: Install AWS CDK Toolkit globally
+        run: npm install --global aws-cdk
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Configure AWS credentials for Dev
+        uses: aws-actions/configure-aws-credentials@v4.0.2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_DEV }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_DEV }}
+          aws-region: ${{ env.AWS_REGION }}
+      
+      - name:  Deploy BOT Service to DEV
+        run: npm run cdk deploy -- --require-approval never
+      
+      - name: Configure AWS credentials for ACC
+        uses: aws-actions/configure-aws-credentials@v4.0.2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_ACC }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_ACC }}
+          aws-region: ${{ env.AWS_REGION }}
+      
+      - name:  Deploy BOT Service to ACC
+        run: npm run cdk deploy -- --require-approval never
+      
+      - name: Configure AWS credentials for PROD
+        uses: aws-actions/configure-aws-credentials@v4.0.2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_PROD }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_PROD }}
+          aws-region: ${{ env.AWS_REGION }}
+      
+      - name:  Deploy BOT Service to PROD
+        run: npm run cdk deploy -- --require-approval never
+
